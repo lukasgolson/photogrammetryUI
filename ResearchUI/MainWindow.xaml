@@ -3,6 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Script Interface" Height="700" Width="900"
         WindowStartupLocation="CenterScreen">
+    
+    
+    <Window.Resources>
+        <!-- Use the built-in BooleanToVisibilityConverter -->
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </Window.Resources>
 
     <Grid>
         <!-- Main Tab Control -->
@@ -43,17 +49,26 @@
                             <CheckBox Name="RegenerateCheckBox" Content="Regenerate Temporary Directories" />
                             <CheckBox Name="ProcessIndividuallyCheckBox" Content="Process Individually" />
                             <CheckBox Name="UseMaskCheckBox" Content="Use Mask" />
-                            <TextBlock Text="Mask Model:" />
-                            <ComboBox Name="MaskModelComboBox">
+                          
+                            <!-- Mask Model (Visible only when Use Mask is checked) -->
+                            <TextBlock Text="Mask Model:" 
+                                       Visibility="{Binding IsChecked, ElementName=UseMaskCheckBox, Converter={StaticResource BoolToVis}}" />
+                            <ComboBox Name="MaskModelComboBox"
+                                      Visibility="{Binding IsChecked, ElementName=UseMaskCheckBox, Converter={StaticResource BoolToVis}}">
                                 <ComboBoxItem Content="Skymask" />
                                 <ComboBoxItem Content="Me2Net" />
                             </ComboBox>
-                            <TextBlock Text="Mask Processor:" />
-                            <ComboBox Name="MaskProcessorComboBox">
+
+                            <!-- Mask Processor (Visible only when Use Mask is checked) -->
+                            <TextBlock Text="Mask Processor:" 
+                                       Visibility="{Binding IsChecked, ElementName=UseMaskCheckBox, Converter={StaticResource BoolToVis}}" />
+                            <ComboBox Name="MaskProcessorComboBox"
+                                      Visibility="{Binding IsChecked, ElementName=UseMaskCheckBox, Converter={StaticResource BoolToVis}}">
                                 <ComboBoxItem Content="cpu" />
                                 <ComboBoxItem Content="cuda" />
                                 <ComboBoxItem Content="gpu" />
                             </ComboBox>
+                            
                             <TextBlock Text="Drop Ratio (e.g., 0.95):" />
                             <TextBox Name="DropRatioTextBox" />
                             <TextBlock Text="Quality Threshold (e.g., 0.5):" />

@@ -20,14 +20,14 @@ namespace ResearchUI;
 /// </summary>
 public partial class MainWindow : Window
 {
-    
     private StringBuilder _consoleOutput; // Shared memory for console output
-    
+    private Python _python;
+
     public MainWindow()
     {
         InitializeComponent();
-        
-        
+
+
         // Set default values for the input fields
         DataDirTextBox.Text = "Data";
         VideoDirTextBox.Text = "Data/video";
@@ -50,26 +50,37 @@ public partial class MainWindow : Window
         QuantileTextBox.Text = "0";
         BufferPercentTextBox.Text = "0.1";
         ConfidenceThresholdTextBox.Text = "0";
-        
-        
+
+
         // Initialize the shared console output
         _consoleOutput = new StringBuilder();
-            
+
         // Bind the Console TextBox controls to the shared console output
         ConsoleOutputTextBox.Text = _consoleOutput.ToString();
         ConsoleOutputTextBoxOnly.Text = _consoleOutput.ToString();
-        
+
         // Redirect Console output
         Console.SetOut(new TextBoxWriter(this));
         Console.SetError(new TextBoxWriter(this));
         
+        _python = new Python();
+        
+        // run the startup sequence asynchronously
+        Task.Run(StartupSequence);
+    }
 
+
+    private async void StartupSequence()
+    {
         // print assembly version and build date
+        Console.WriteLine("VidTree UI");
         Console.WriteLine($"Assembly: {System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}");
         Console.WriteLine($"Version: {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version}");
-        Console.WriteLine($"Build Date: {System.IO.File.GetCreationTime(System.Reflection.Assembly.GetExecutingAssembly().Location)}");
+        Console.WriteLine(
+            $"Build Date: {File.GetCreationTime(System.Reflection.Assembly.GetExecutingAssembly().Location)}");
         Console.WriteLine();
-        
+
+        await _python.RunProcess("Scripts/setup.py");
     }
 
 
@@ -83,26 +94,9 @@ public partial class MainWindow : Window
 
         string arguments = $@"--data_dir {dataDir} --video_dir {videoDir} --export_dir {exportDir}";
 
-        RunProcess(arguments);
+        _python.RunProcess(arguments).Wait();
     }
 
-    private void RunProcess(string arguments)
-    {
-        Process process = new Process();
-        process.StartInfo.FileName = "python"; // Assumes Python is available in PATH
-        process.StartInfo.Arguments = arguments;
-        process.StartInfo.RedirectStandardOutput = true;
-        process.StartInfo.RedirectStandardError = true;
-        process.StartInfo.UseShellExecute = false;
-        process.StartInfo.CreateNoWindow = true;
-
-        process.OutputDataReceived += (sender, args) => AppendConsoleOutput(args.Data);
-        process.ErrorDataReceived += (sender, args) => AppendConsoleOutput(args.Data);
-
-        process.Start();
-        process.BeginOutputReadLine();
-        process.BeginErrorReadLine();
-    }
 
     private void AppendConsoleOutput(string text)
     {
@@ -140,7 +134,7 @@ public partial class MainWindow : Window
         string? folderPath = System.IO.Path.GetDirectoryName(dialog.FolderName);
         if (textBox != null) textBox.Text = folderPath;
     }
-    
+
     private class TextBoxWriter : TextWriter
     {
         private readonly MainWindow _window;
