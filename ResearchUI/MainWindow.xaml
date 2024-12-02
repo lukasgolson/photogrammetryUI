@@ -1,0 +1,136 @@
+﻿<Window x:Class="ResearchUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Script Interface" Height="700" Width="900"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid>
+        <!-- Main Tab Control -->
+        <TabControl>
+            <!-- Configure Tab -->
+            <TabItem Header="Configure">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*"/> <!-- For Configuration UI -->
+                        <RowDefinition Height="*"/>  <!-- For Console Output -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Configuration UI -->
+                    <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" Margin="10">
+                        <StackPanel>
+                            <TextBlock Text="General Settings" FontWeight="Bold" FontSize="16" Margin="0,10"/>
+
+                            <!-- Directory with File Selector -->
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Data Directory:" VerticalAlignment="Center" Width="150"/>
+                                <TextBox Name="DataDirTextBox" Width="500"/>
+                                <Button Content="Select" Width="100" Click="SelectFolder_Click" Tag="DataDirTextBox"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Video Directory:" VerticalAlignment="Center" Width="150"/>
+                                <TextBox Name="VideoDirTextBox" Width="500"/>
+                                <Button Content="Select" Width="100" Click="SelectFolder_Click" Tag="VideoDirTextBox"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Export Directory:" VerticalAlignment="Center" Width="150"/>
+                                <TextBox Name="ExportDirTextBox" Width="500"/>
+                                <Button Content="Select" Width="100" Click="SelectFolder_Click" Tag="ExportDirTextBox"/>
+                            </StackPanel>
+
+                            <!-- Remaining Inputs -->
+                            <CheckBox Name="RegenerateCheckBox" Content="Regenerate Temporary Directories" />
+                            <CheckBox Name="ProcessIndividuallyCheckBox" Content="Process Individually" />
+                            <CheckBox Name="UseMaskCheckBox" Content="Use Mask" />
+                            <TextBlock Text="Mask Model:" />
+                            <ComboBox Name="MaskModelComboBox">
+                                <ComboBoxItem Content="Skymask" />
+                                <ComboBoxItem Content="Me2Net" />
+                            </ComboBox>
+                            <TextBlock Text="Mask Processor:" />
+                            <ComboBox Name="MaskProcessorComboBox">
+                                <ComboBoxItem Content="cpu" />
+                                <ComboBoxItem Content="cuda" />
+                                <ComboBoxItem Content="gpu" />
+                            </ComboBox>
+                            <TextBlock Text="Drop Ratio (e.g., 0.95):" />
+                            <TextBox Name="DropRatioTextBox" />
+                            <TextBlock Text="Quality Threshold (e.g., 0.5):" />
+                            <TextBox Name="QualityThresholdTextBox" />
+                            <CheckBox Name="DebugCheckBox" Content="Debug Mode" />
+                            <TextBlock Text="Resolution (e.g., 3840x2160):" />
+                            <TextBox Name="ResolutionTextBox" />
+                            <TextBlock Text="Keypoint Count (e.g., 1600000):" />
+                            <TextBox Name="KeypointCountTextBox" />
+                            <CheckBox Name="IterativeMatchCheckBox" Content="Iterative Match Enabled" />
+                            <TextBlock Text="Alignment Version:" />
+                            <TextBox Name="AlignmentVersionTextBox" />
+                            <CheckBox Name="NormalizeBrightnessCheckBox" Content="Normalize Brightness" />
+
+                            <TextBlock Text="Clipping Options" FontWeight="Bold" FontSize="16" Margin="0,10"/>
+                            <TextBlock Text="Quantile (e.g., 0):" />
+                            <TextBox Name="QuantileTextBox" />
+                            <TextBlock Text="Buffer Percent (e.g., 0.1):" />
+                            <TextBox Name="BufferPercentTextBox" />
+                            <TextBlock Text="Confidence Threshold (e.g., 0):" />
+                            <TextBox Name="ConfidenceThresholdTextBox" />
+
+                            <Button Name="RunScriptButton" Content="Run Script" Click="RunScriptButton_Click" HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <!-- Console Output at the Bottom -->
+                    <Grid Grid.Row="1" Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/> <!-- For Separator -->
+                            <RowDefinition Height="Auto"/> <!-- For Console Label -->
+                            <RowDefinition Height="*"/>   <!-- For Console TextBox -->
+                        </Grid.RowDefinitions>
+
+                        <!-- Horizontal Line -->
+                        <Separator Grid.Row="0" Margin="0,10,0,10" />
+
+                        <!-- Console Label -->
+                        <TextBlock Text="Console Output:" 
+                                   FontWeight="Bold" 
+                                   Margin="0,0,0,5" 
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center" 
+                                   Grid.Row="1" />
+
+                        <!-- Console TextBox -->
+                        <TextBox Name="ConsoleOutputTextBox" 
+                                 Grid.Row="2"
+                                 IsReadOnly="True" 
+                                 FontFamily="Consolas" 
+                                 FontSize="12" 
+                                 TextWrapping="Wrap" 
+                                 AcceptsReturn="True" 
+                                 VerticalScrollBarVisibility="Auto"
+                                 HorizontalScrollBarVisibility="Auto"
+                                 VerticalAlignment="Stretch"
+                                 HorizontalAlignment="Stretch"/>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!-- Console Tab -->
+            <TabItem Header="Console">
+                <Grid>
+                    <!-- Console TextBox (fills entire tab) -->
+                    <TextBox Name="ConsoleOutputTextBoxOnly" 
+                             IsReadOnly="True" 
+                             FontFamily="Consolas" 
+                             FontSize="12" 
+                             TextWrapping="Wrap" 
+                             AcceptsReturn="True" 
+                             VerticalScrollBarVisibility="Auto"
+                             HorizontalScrollBarVisibility="Auto"
+                             VerticalAlignment="Stretch"
+                             HorizontalAlignment="Stretch"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
