@@ -3,55 +3,146 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Script Interface" Height="700" Width="900"
         WindowStartupLocation="CenterScreen">
-    
-    
+
     <Window.Resources>
         <!-- Use the built-in BooleanToVisibilityConverter -->
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
+
+        <Style x:Key="RemoveButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Gray" />
+            <Setter Property="Foreground" Value="Red" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+
     </Window.Resources>
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*" /> <!-- For Configuration UI -->
+            <RowDefinition Height="auto" /> <!-- For Configuration UI -->
+        </Grid.RowDefinitions>
+        
         <!-- Main Tab Control -->
-        <TabControl>
+        <TabControl SelectionChanged="TabControl_SelectionChanged">
             <!-- Configure Tab -->
-            <TabItem Header="Configure">
+            <TabItem Header="Algorithm Parameters">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="2*"/> <!-- For Configuration UI -->
-                        <RowDefinition Height="*"/>  <!-- For Console Output -->
+                        <RowDefinition Height="*" /> <!-- For Configuration UI -->
                     </Grid.RowDefinitions>
 
                     <!-- Configuration UI -->
                     <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" Margin="10">
                         <StackPanel>
-                            <TextBlock Text="General Settings" FontWeight="Bold" FontSize="16" Margin="0,10"/>
+                            
+                            <TextBlock Text="General" FontWeight="Bold" FontSize="16" Margin="0,10" />
+
+
+                            <!-- Checkboxes in Single Row -->
+                            <Grid Margin="0,10,0,10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Row 1 -->
+                                <CheckBox Name="RegenerateCheckBox" Content="Regenerate Temporary Directories"
+                                          Grid.Row="0" Grid.Column="0" Margin="0,0,10,0" />
+                                <CheckBox Name="ProcessIndividuallyCheckBox" Content="Process Individually"
+                                          Grid.Row="0" Grid.Column="1" Margin="0,0,10,0" />
+                                <CheckBox Name="UseMaskCheckBox" Content="Use Mask" Grid.Row="0" Grid.Column="2" />
+
+                                <!-- Row 2 -->
+                                <CheckBox Name="DebugCheckBox" Content="Debug Mode" Grid.Row="1" Grid.Column="0"
+                                          Margin="0,0,10,0" />
+                                <CheckBox Name="NormalizeBrightnessCheckBox" Content="Normalize Brightness"
+                                          Grid.Row="1" Grid.Column="1" />
+                            </Grid>
+                            
+                            <Separator Margin="0,10,0,10" />
+                            
+                            <TextBlock Text="Directory Settings" FontWeight="Bold" FontSize="16" Margin="0,10" />
 
                             <!-- Directory with File Selector -->
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Data Directory:" VerticalAlignment="Center" Width="150"/>
-                                <TextBox Name="DataDirTextBox" Width="500"/>
-                                <Button Content="Select" Width="100" Click="SelectFolder_Click" Tag="DataDirTextBox"/>
+                                <TextBlock Text="Data Directory:" VerticalAlignment="Center" Width="150" />
+                                <TextBox Name="DataDirTextBox" Width="500" />
+                                <Button Content="Select" Width="100" Click="SelectFolder_Click" Tag="DataDirTextBox" />
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Video Directory:" VerticalAlignment="Center" Width="150"/>
-                                <TextBox Name="VideoDirTextBox" Width="500"/>
-                                <Button Content="Select" Width="100" Click="SelectFolder_Click" Tag="VideoDirTextBox"/>
+                                <TextBlock Text="Video Directory:" VerticalAlignment="Center" Width="150" />
+                                <TextBox Name="VideoDirTextBox" Width="500" />
+                                <Button Content="Select" Width="100" Click="SelectFolder_Click" Tag="VideoDirTextBox" />
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Export Directory:" VerticalAlignment="Center" Width="150"/>
-                                <TextBox Name="ExportDirTextBox" Width="500"/>
-                                <Button Content="Select" Width="100" Click="SelectFolder_Click" Tag="ExportDirTextBox"/>
+                                <TextBlock Text="Export Directory:" VerticalAlignment="Center" Width="150" />
+                                <TextBox Name="ExportDirTextBox" Width="500" />
+                                <Button Content="Select" Width="100" Click="SelectFolder_Click" Tag="ExportDirTextBox" />
                             </StackPanel>
 
-                            <!-- Remaining Inputs -->
-                            <CheckBox Name="RegenerateCheckBox" Content="Regenerate Temporary Directories" />
-                            <CheckBox Name="ProcessIndividuallyCheckBox" Content="Process Individually" />
-                            <CheckBox Name="UseMaskCheckBox" Content="Use Mask" />
-                          
-                            <!-- Mask Model (Visible only when Use Mask is checked) -->
-                            <TextBlock Text="Mask Model:" 
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Config Directory:" VerticalAlignment="Center" Width="150" />
+                                <TextBox Name="ConfigDirTextBox" Width="500" />
+                                <Button Content="Select" Width="100" Click="SelectFolder_Click" Tag="ConfigDirTextBox" />
+                            </StackPanel>
+
+
+
+                         
+                            
+                            <Separator Margin="0,10,0,10" />
+
+                            <TextBlock Text="Reconstruction Parameters" FontWeight="Bold" FontSize="16" Margin="0,10" />
+
+
+                            <TextBlock Text="Keypoint Count (e.g., 1600000):" />
+                            <TextBox Name="KeypointCountTextBox" PreviewTextInput="NumericInputOnly" />
+
+                            <TextBlock Text="Tiepoint Count (default - unlimited: 0):" />
+                            <TextBox Name="TiepointCountTextBox" PreviewTextInput="NumericInputOnly" />
+
+                            <!-- Alignment Version Dropdown -->
+                            <TextBlock Text="Alignment Version:" />
+                            <ComboBox Name="AlignmentVersionComboBox">
+                                <ComboBoxItem Content="Disabled" />
+                                <ComboBoxItem Content="v1.0" />
+                                <ComboBoxItem Content="v2.0" />
+                            </ComboBox>
+                            
+                            <Separator Margin="0,10,0,10" />
+
+                            <TextBlock Text="Frame Extraction" FontWeight="Bold" FontSize="16" Margin="0,10" />
+
+
+                            <!-- Numeric and Float Inputs -->
+                            <TextBlock Text="Drop Ratio (e.g., 0.95):" />
+                            <TextBox Name="DropRatioTextBox" PreviewTextInput="FloatInputOnly" />
+
+                            <TextBlock Text="Quality Threshold (e.g., 0.5):" />
+                            <TextBox Name="QualityThresholdTextBox" PreviewTextInput="FloatInputOnly" />
+
+                            <!-- Resolution Inputs -->
+                            <TextBlock Text="Resolution:" />
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox Name="ResolutionWidthTextBox" Width="100" PreviewTextInput="NumericInputOnly" />
+                                <TextBlock Text="x" VerticalAlignment="Center" Margin="5,0" />
+                                <TextBox Name="ResolutionHeightTextBox" Width="100" PreviewTextInput="NumericInputOnly" />
+                            </StackPanel>
+
+                            <!-- Mask Model -->
+                            <TextBlock Text="Mask Model:"
                                        Visibility="{Binding IsChecked, ElementName=UseMaskCheckBox, Converter={StaticResource BoolToVis}}" />
                             <ComboBox Name="MaskModelComboBox"
                                       Visibility="{Binding IsChecked, ElementName=UseMaskCheckBox, Converter={StaticResource BoolToVis}}">
@@ -59,93 +150,300 @@
                                 <ComboBoxItem Content="Me2Net" />
                             </ComboBox>
 
-                            <!-- Mask Processor (Visible only when Use Mask is checked) -->
-                            <TextBlock Text="Mask Processor:" 
+                            <!-- Mask Processor -->
+                            <TextBlock Text="Mask Processor:"
                                        Visibility="{Binding IsChecked, ElementName=UseMaskCheckBox, Converter={StaticResource BoolToVis}}" />
                             <ComboBox Name="MaskProcessorComboBox"
                                       Visibility="{Binding IsChecked, ElementName=UseMaskCheckBox, Converter={StaticResource BoolToVis}}">
+                                <ComboBoxItem Content="auto" />
                                 <ComboBoxItem Content="cpu" />
                                 <ComboBoxItem Content="cuda" />
                                 <ComboBoxItem Content="gpu" />
                             </ComboBox>
-                            
-                            <TextBlock Text="Drop Ratio (e.g., 0.95):" />
-                            <TextBox Name="DropRatioTextBox" />
-                            <TextBlock Text="Quality Threshold (e.g., 0.5):" />
-                            <TextBox Name="QualityThresholdTextBox" />
-                            <CheckBox Name="DebugCheckBox" Content="Debug Mode" />
-                            <TextBlock Text="Resolution (e.g., 3840x2160):" />
-                            <TextBox Name="ResolutionTextBox" />
-                            <TextBlock Text="Keypoint Count (e.g., 1600000):" />
-                            <TextBox Name="KeypointCountTextBox" />
-                            <CheckBox Name="IterativeMatchCheckBox" Content="Iterative Match Enabled" />
-                            <TextBlock Text="Alignment Version:" />
-                            <TextBox Name="AlignmentVersionTextBox" />
-                            <CheckBox Name="NormalizeBrightnessCheckBox" Content="Normalize Brightness" />
 
-                            <TextBlock Text="Clipping Options" FontWeight="Bold" FontSize="16" Margin="0,10"/>
+
+                            <Separator Margin="0,10,0,10" />
+                            <TextBlock Text="Clipping Options" FontWeight="Bold" FontSize="16" Margin="0,10" />
                             <TextBlock Text="Quantile (e.g., 0):" />
-                            <TextBox Name="QuantileTextBox" />
-                            <TextBlock Text="Buffer Percent (e.g., 0.1):" />
-                            <TextBox Name="BufferPercentTextBox" />
-                            <TextBlock Text="Confidence Threshold (e.g., 0):" />
-                            <TextBox Name="ConfidenceThresholdTextBox" />
+                            <TextBox Name="QuantileTextBox" PreviewTextInput="FloatInputOnly" />
 
-                            <Button Name="RunScriptButton" Content="Run Script" Click="RunScriptButton_Click" HorizontalAlignment="Center" />
+                            <TextBlock Text="Buffer Percent (e.g., 0.1):" />
+                            <TextBox Name="BufferPercentTextBox" PreviewTextInput="FloatInputOnly" />
+
+                            <TextBlock Text="Confidence Threshold (e.g., 0):" />
+                            <TextBox Name="ConfidenceThresholdTextBox" PreviewTextInput="FloatInputOnly" />
+
+
+                            <Separator Margin="0,10,0,10" />
+
+                            
+                            <Button Name="RunScriptButton" Content="Run Script" Click="RunScriptButton_Click"
+                                    HorizontalAlignment="Center" />
+
+
                         </StackPanel>
                     </ScrollViewer>
 
-                    <!-- Console Output at the Bottom -->
-                    <Grid Grid.Row="1" Margin="10">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/> <!-- For Separator -->
-                            <RowDefinition Height="Auto"/> <!-- For Console Label -->
-                            <RowDefinition Height="*"/>   <!-- For Console TextBox -->
-                        </Grid.RowDefinitions>
-
-                        <!-- Horizontal Line -->
-                        <Separator Grid.Row="0" Margin="0,10,0,10" />
-
-                        <!-- Console Label -->
-                        <TextBlock Text="Console Output:" 
-                                   FontWeight="Bold" 
-                                   Margin="0,0,0,5" 
-                                   HorizontalAlignment="Left"
-                                   VerticalAlignment="Center" 
-                                   Grid.Row="1" />
-
-                        <!-- Console TextBox -->
-                        <TextBox Name="ConsoleOutputTextBox" 
-                                 Grid.Row="2"
-                                 IsReadOnly="True" 
-                                 FontFamily="Consolas" 
-                                 FontSize="12" 
-                                 TextWrapping="Wrap" 
-                                 AcceptsReturn="True" 
-                                 VerticalScrollBarVisibility="Auto"
-                                 HorizontalScrollBarVisibility="Auto"
-                                 VerticalAlignment="Stretch"
-                                 HorizontalAlignment="Stretch"/>
-                    </Grid>
+                
                 </Grid>
             </TabItem>
+
+            <TabItem Header="Collection Parameters">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="10">
+                    <Grid>
+                        
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" /> <!-- For Frame Extraction title -->
+                            <RowDefinition Height="Auto" /> <!-- For Enable Fiducial Constraints checkbox -->
+                            <RowDefinition Height="Auto" /> <!-- For Enable Fiducial Constraints checkbox -->
+                            <RowDefinition Height="Auto" />   <!-- For the rest of the content -->
+                        </Grid.RowDefinitions>
+                        
+                        <StackPanel>
+                            
+                            <TextBlock Text="General" FontWeight="Bold" FontSize="16" Margin="0,10" />
+
+
+                            <!-- Checkboxes in Single Row -->
+                            <Grid Margin="0,10,0,10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Row 1 -->
+                                <CheckBox Name="CalibrationCheckbox" Content="Load Calibration File"
+                                          Grid.Row="0" Grid.Column="0" Margin="0,0,10,0" />
+                                <CheckBox Name="SensorCorrectionCheckbox" Content="Sensor Correction"
+                                          Grid.Row="0" Grid.Column="1" Margin="0,0,10,0" />
+                                
+                                <CheckBox Name="FiducialConstraintCheckbox" Content="Feducial Constraints"
+                                          Grid.Row="0" Grid.Column="2" Margin="0,0,10,0" />
+
+                                <!-- Row 2 -->
+                            
+                            </Grid>
+                            
+                            <Separator Margin="0,10,0,10" />
+                            
+                            <TextBlock Text="Sensor" FontWeight="Bold" FontSize="16" Margin="0,10,0,5"
+                                       HorizontalAlignment="Stretch"/>
+                            
+                            <!-- Sensor -->
+                            
+                            <TextBlock Text="Rolling Shutter Regularization:"/>
+                            <ComboBox Name="ShutterCombobox">
+                                <ComboBoxItem Content="Disabled" />
+                                <ComboBoxItem Content="Semi-Regularization" />
+                                <ComboBoxItem Content="Full" />
+                            </ComboBox>
+                            
+                            <TextBlock Text="Sensor Type:"/>
+                            <ComboBox Name="SensorTypeComboBox">
+                                <ComboBoxItem Content="Frame" />
+                                <ComboBoxItem Content="Fisheye" />
+                                <ComboBoxItem Content="Spherical" />
+                                <ComboBoxItem Content="Cylindrical" />
+                                <ComboBoxItem Content="Rpc" />
+                            </ComboBox>
+                            
+                            
+                            <TextBlock Text="Pixel Resolution:" />
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox Name="PixelWidthTextBox" Width="100" PreviewTextInput="NumericInputOnly" />
+                                <TextBlock Text="x" VerticalAlignment="Center" Margin="5,0" />
+                                <TextBox Name="PixelHeightTextBox" Width="100" PreviewTextInput="NumericInputOnly" />
+                            </StackPanel>
+                            
+                            <Separator Margin="0,10,0,10" />
+                        
+                            <TextBlock Text="Fiducial Constraints" FontWeight="Bold" FontSize="16" Margin="0,10,0,5"
+                                       HorizontalAlignment="Stretch" Grid.Row="2"/>
+                            
+                        </StackPanel>
+                        
+                    
+
+                        <!-- Constraints -->
+                        <StackPanel Margin="10" HorizontalAlignment="Stretch" Grid.Row="2">
+                       
+
+                            <!-- Pairs Section -->
+                            <TextBlock Text="Pairs" FontWeight="Bold" Margin="0,10,0,5" HorizontalAlignment="Stretch" />
+
+                            <ListBox ItemsSource="{Binding FiducialConstraints.Pairs}" HorizontalAlignment="Stretch">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="5" HorizontalAlignment="Stretch">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="1*" />
+                                                <ColumnDefinition Width="1*" />
+                                                <ColumnDefinition Width="1*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackPanel Orientation="Horizontal" Grid.Column="0" Margin="5"
+                                                        HorizontalAlignment="Stretch">
+                                                <Label Content="Target 1" Width="70" VerticalAlignment="Center" />
+                                                <TextBox Width="100" Margin="5,0,0,0"
+                                                         Text="{Binding Target1, Mode=TwoWay}" />
+                                            </StackPanel>
+
+                                            <StackPanel Orientation="Horizontal" Grid.Column="1" Margin="5"
+                                                        HorizontalAlignment="Stretch">
+                                                <Label Content="Target 2" Width="70" VerticalAlignment="Center" />
+                                                <TextBox Width="100" Margin="5,0,0,0"
+                                                         Text="{Binding Target2, Mode=TwoWay}" />
+                                            </StackPanel>
+
+                                            <StackPanel Orientation="Horizontal" Grid.Column="2" Margin="5"
+                                                        HorizontalAlignment="Stretch">
+                                                <Label Content="Distance" Width="70" VerticalAlignment="Center" />
+                                                <TextBox Width="80" Margin="5,0,0,0"
+                                                         Text="{Binding Distance, Mode=TwoWay}" />
+                                            </StackPanel>
+
+                                            <Button Content="✖"
+                                                    Command="{Binding RemovePairCommand, RelativeSource={RelativeSource AncestorType=TabItem}}"
+                                                    CommandParameter="{Binding}"
+                                                    Width="30" Height="30" Margin="5"
+                                                    Style="{StaticResource RemoveButtonStyle}"
+                                                    Grid.Column="3" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+
+                            <Button Content="Add Pair"
+                                    Command="{Binding AddPairCommand}"
+                                    Margin="0,10,0,0" HorizontalAlignment="Left" />
+
+                            <!-- Positions Section -->
+                            <TextBlock Text="Positions" FontWeight="Bold" Margin="0,20,0,5"
+                                       HorizontalAlignment="Stretch" />
+
+                            <ListBox ItemsSource="{Binding FiducialConstraints.Position}" HorizontalAlignment="Stretch">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="5" HorizontalAlignment="Stretch">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="1*" />
+                                                <ColumnDefinition Width="1*" />
+                                                <ColumnDefinition Width="1*" />
+                                                <ColumnDefinition Width="1*" />
+                                                <ColumnDefinition Width="1*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackPanel Orientation="Horizontal" Grid.Column="0" Margin="5"
+                                                        HorizontalAlignment="Stretch">
+                                                <Label Content="Target" Width="70" VerticalAlignment="Center" />
+                                                <TextBox Width="80" Margin="5,0,0,0"
+                                                         Text="{Binding Target, Mode=TwoWay}" />
+                                            </StackPanel>
+
+                                            <StackPanel Orientation="Horizontal" Grid.Column="1" Margin="5"
+                                                        HorizontalAlignment="Stretch">
+                                                <Label Content="X" Width="70" VerticalAlignment="Center" />
+                                                <TextBox Width="60" Margin="5,0,0,0" Text="{Binding X, Mode=TwoWay}" />
+                                            </StackPanel>
+
+                                            <StackPanel Orientation="Horizontal" Grid.Column="2" Margin="5"
+                                                        HorizontalAlignment="Stretch">
+                                                <Label Content="Y" Width="70" VerticalAlignment="Center" />
+                                                <TextBox Width="60" Margin="5,0,0,0" Text="{Binding Y, Mode=TwoWay}" />
+                                            </StackPanel>
+
+                                            <StackPanel Orientation="Horizontal" Grid.Column="3" Margin="5"
+                                                        HorizontalAlignment="Stretch">
+                                                <Label Content="Z" Width="70" VerticalAlignment="Center" />
+                                                <TextBox Width="60" Margin="5,0,0,0" Text="{Binding Z, Mode=TwoWay}" />
+                                            </StackPanel>
+
+                                            <StackPanel Orientation="Horizontal" Grid.Column="4" Margin="5"
+                                                        HorizontalAlignment="Stretch">
+                                                <Label Content="Accuracy" Width="70" VerticalAlignment="Center" />
+                                                <TextBox Width="80" Margin="5,0,0,0"
+                                                         Text="{Binding Accuracy, Mode=TwoWay}" />
+                                            </StackPanel>
+
+                                            <Button Content="✖"
+                                                    Command="{Binding RemovePositionCommand, RelativeSource={RelativeSource AncestorType=TabItem}}"
+                                                    CommandParameter="{Binding}"
+                                                    Width="30" Height="30" Margin="5"
+                                                    Style="{StaticResource RemoveButtonStyle}"
+                                                    Grid.Column="5" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+
+                            <Button Content="Add Position"
+                                    Command="{Binding AddPositionCommand}"
+                                    Margin="0,10,0,0" HorizontalAlignment="Left" />
+                        </StackPanel>
+                    </Grid>
+                </ScrollViewer>
+            </TabItem>
+            
+            <TabItem Header="Extraction Parameters">
+                
+                
+                
+            </TabItem>
+
 
             <!-- Console Tab -->
             <TabItem Header="Console">
                 <Grid>
                     <!-- Console TextBox (fills entire tab) -->
-                    <TextBox Name="ConsoleOutputTextBoxOnly" 
-                             IsReadOnly="True" 
-                             FontFamily="Consolas" 
-                             FontSize="12" 
-                             TextWrapping="Wrap" 
-                             AcceptsReturn="True" 
+                    <TextBox Name="ConsoleOutputTextBoxOnly"
+                             IsReadOnly="True"
+                             FontFamily="Consolas"
+                             FontSize="12"
+                             TextWrapping="Wrap"
+                             AcceptsReturn="True"
                              VerticalScrollBarVisibility="Auto"
                              HorizontalScrollBarVisibility="Auto"
                              VerticalAlignment="Stretch"
-                             HorizontalAlignment="Stretch"/>
+                             HorizontalAlignment="Stretch" />
                 </Grid>
             </TabItem>
+
+
         </TabControl>
+        
+        <!-- Console Output at the Bottom -->
+        <Grid Grid.Row="1" Margin="10" Visibility="{Binding IsConsoleTabActive, Converter={StaticResource BoolToVis}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" /> <!-- For the console label -->
+                <RowDefinition Height="*" />   <!-- For the console TextBox -->
+            </Grid.RowDefinitions>
+
+            <!-- Console Label -->
+            <TextBlock Text="Console Output:"
+                       FontWeight="Bold"
+                       Margin="0,0,0,5"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Center"
+                       Grid.Row="0" />
+
+            <!-- Console TextBox -->
+            <TextBox Name="ConsoleOutputTextBox"
+                     Grid.Row="1"
+                     IsReadOnly="True"
+                     FontFamily="Consolas"
+                     FontSize="12"
+                     TextWrapping="Wrap"
+                     AcceptsReturn="True"
+                     VerticalScrollBarVisibility="Auto"
+                     HorizontalScrollBarVisibility="Auto"
+                     VerticalAlignment="Stretch"
+                     HorizontalAlignment="Stretch" />
+        </Grid>
     </Grid>
 </Window>

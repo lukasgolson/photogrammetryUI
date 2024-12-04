@@ -1,16 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Threading;
 using Microsoft.Win32;
 
 namespace ResearchUI;
@@ -18,10 +12,31 @@ namespace ResearchUI;
 /// <summary>
 /// Interaction logic for MainWindow.xaml
 /// </summary>
-public partial class MainWindow : Window
+public partial class MainWindow : Window, INotifyPropertyChanged
 {
     private StringBuilder _consoleOutput; // Shared memory for console output
     private Python _python;
+
+    public FiducialConstraints FiducialConstraints { get; set; } = new();
+
+    public ICommand AddPairCommand { get; }
+    public ICommand RemovePairCommand { get; }
+    public ICommand AddPositionCommand { get; }
+    public ICommand RemovePositionCommand { get; }
+
+
+    private bool _isConsoleTabActive;
+
+    public bool IsConsoleTabActive
+    {
+        get => _isConsoleTabActive;
+        set
+        {
+            _isConsoleTabActive = value;
+            OnPropertyChanged(nameof(IsConsoleTabActive));
+        }
+    }
+
 
     public MainWindow()
     {
@@ -40,16 +55,31 @@ public partial class MainWindow : Window
         DropRatioTextBox.Text = "0.95";
         QualityThresholdTextBox.Text = "0.5";
         DebugCheckBox.IsChecked = false;
-        ResolutionTextBox.Text = "3840x2160";
+        ResolutionWidthTextBox.Text = "3840";
+        ResolutionHeightTextBox.Text = "2160";
+        TiepointCountTextBox.Text = "0";
         KeypointCountTextBox.Text = "1600000";
-        IterativeMatchCheckBox.IsChecked = false;
-        AlignmentVersionTextBox.Text = "0";
+        AlignmentVersionComboBox.SelectedIndex = 0; // "Disabled"
         NormalizeBrightnessCheckBox.IsChecked = false;
 
         // Set defaults for clipping options
         QuantileTextBox.Text = "0";
         BufferPercentTextBox.Text = "0.1";
         ConfidenceThresholdTextBox.Text = "0";
+
+        FiducialConstraints.Pairs.Add(new Pair { Target1 = "target 1", Target2 = "target 2", Distance = 0.185 });
+        FiducialConstraints.Position.Add(new Position
+            { Target = "target 1", X = 0.0, Y = 0.0925, Z = 0.1045, Accuracy = 0.01 });
+
+
+        AddPairCommand = new RelayCommand(AddPair);
+        RemovePairCommand = new RelayCommand<Pair>(RemovePair);
+        AddPositionCommand = new RelayCommand(AddPosition);
+        RemovePositionCommand = new RelayCommand<Position>(RemovePosition);
+
+
+        // Set DataContext for binding
+        DataContext = this;
 
 
         // Initialize the shared console output
@@ -62,11 +92,53 @@ public partial class MainWindow : Window
         // Redirect Console output
         Console.SetOut(new TextBoxWriter(this));
         Console.SetError(new TextBoxWriter(this));
-        
+
         _python = new Python();
-        
+
         // run the startup sequence asynchronously
         Task.Run(StartupSequence);
+    }
+
+    private void AddPair()
+    {
+        FiducialConstraints.Pairs.Add(new Pair { Target1 = "", Target2 = "", Distance = 0 });
+    }
+
+    private void RemovePair(Pair pair)
+    {
+        FiducialConstraints.Pairs.Remove(pair);
+    }
+
+    private void AddPosition()
+    {
+        FiducialConstraints.Position.Add(new Position { Target = "", X = 0, Y = 0, Z = 0, Accuracy = 0 });
+    }
+
+    private void RemovePosition(Position position)
+    {
+        FiducialConstraints.Position.Remove(position);
+    }
+
+
+    private void ProcessFiducialConstraints()
+    {
+        if (FiducialConstraints.Enabled)
+        {
+            foreach (var pair in FiducialConstraints.Pairs)
+            {
+                Console.WriteLine($"Pair: {pair.Target1}-{pair.Target2}, Distance: {pair.Distance}");
+            }
+
+            foreach (var position in FiducialConstraints.Position)
+            {
+                Console.WriteLine(
+                    $"Position: {position.Target} (X: {position.X}, Y: {position.Y}, Z: {position.Z}, Accuracy: {position.Accuracy})");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Fiducial Constraints are disabled.");
+        }
     }
 
 
@@ -80,7 +152,53 @@ public partial class MainWindow : Window
             $"Build Date: {File.GetCreationTime(System.Reflection.Assembly.GetExecutingAssembly().Location)}");
         Console.WriteLine();
 
+        await _python.RunProcess("--version");
+
         await _python.RunProcess("Scripts/setup.py");
+    }
+
+    // Allow only numeric input (integers)
+    private void NumericInputOnly(object sender, TextCompositionEventArgs e)
+    {
+        e.Handled = !NumericOnlyRegex().IsMatch(e.Text);
+    }
+
+    // Allow only float input (decimal numbers)
+    private void FloatInputOnly(object sender, TextCompositionEventArgs e)
+    {
+        e.Handled = !FloatOnlyRegex().IsMatch(e.Text);
+    }
+
+    private void NumericPasteOnly(object sender, DataObjectPastingEventArgs e)
+    {
+        if (e.DataObject.GetDataPresent(typeof(string)))
+        {
+            string text = (string)e.DataObject.GetData(typeof(string));
+            if (!NumericOnlyRegex().IsMatch(text))
+            {
+                e.CancelCommand();
+            }
+        }
+        else
+        {
+            e.CancelCommand();
+        }
+    }
+
+    private void FloatPasteOnly(object sender, DataObjectPastingEventArgs e)
+    {
+        if (e.DataObject.GetDataPresent(typeof(string)))
+        {
+            string text = (string)e.DataObject.GetData(typeof(string));
+            if (!FloatOnlyRegex().IsMatch(text))
+            {
+                e.CancelCommand();
+            }
+        }
+        else
+        {
+            e.CancelCommand();
+        }
     }
 
 
@@ -160,5 +278,35 @@ public partial class MainWindow : Window
         }
 
         public override Encoding Encoding => Encoding.UTF8;
+    }
+
+    [System.Text.RegularExpressions.GeneratedRegex("^[0-9]*(\\.[0-9]*)?$")]
+    private static partial System.Text.RegularExpressions.Regex FloatOnlyRegex();
+
+    [System.Text.RegularExpressions.GeneratedRegex("^[0-9]+$")]
+    private static partial System.Text.RegularExpressions.Regex NumericOnlyRegex();
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    protected void OnPropertyChanged(string propertyName)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (e.Source is TabControl tabControl)
+        {
+            IsConsoleTabActive = tabControl.SelectedItem is TabItem tabItem &&
+                                 tabItem.Header.ToString() != "Console";
+        }
+    }
+
+    protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+    {
+        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+        field = value;
+        OnPropertyChanged(propertyName);
+        return true;
     }
 }
