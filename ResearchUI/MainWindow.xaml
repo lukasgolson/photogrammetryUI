@@ -236,7 +236,7 @@
                             <!-- Sensor -->
                             
                             <TextBlock Text="Rolling Shutter Regularization:"/>
-                            <ComboBox Name="ShutterCombobox">
+                            <ComboBox Name="RollingShutterCombobox">
                                 <ComboBoxItem Content="Disabled" />
                                 <ComboBoxItem Content="Semi-Regularization" />
                                 <ComboBoxItem Content="Full" />
@@ -252,7 +252,7 @@
                             </ComboBox>
                             
                             
-                            <TextBlock Text="Pixel Resolution:" />
+                            <TextBlock Text="Pixel Resolution (m):" />
                             <StackPanel Orientation="Horizontal">
                                 <TextBox Name="PixelWidthTextBox" Width="100" PreviewTextInput="NumericInputOnly" />
                                 <TextBlock Text="x" VerticalAlignment="Center" Margin="5,0" />
@@ -302,7 +302,7 @@
 
                                             <StackPanel Orientation="Horizontal" Grid.Column="2" Margin="5"
                                                         HorizontalAlignment="Stretch">
-                                                <Label Content="Distance" Width="70" VerticalAlignment="Center" />
+                                                <Label Content="Distance (m)" Width="70" VerticalAlignment="Center" />
                                                 <TextBox Width="80" Margin="5,0,0,0"
                                                          Text="{Binding Distance, Mode=TwoWay}" />
                                             </StackPanel>
@@ -348,25 +348,25 @@
 
                                             <StackPanel Orientation="Horizontal" Grid.Column="1" Margin="5"
                                                         HorizontalAlignment="Stretch">
-                                                <Label Content="X" Width="70" VerticalAlignment="Center" />
+                                                <Label Content="X (m)" Width="70" VerticalAlignment="Center" />
                                                 <TextBox Width="60" Margin="5,0,0,0" Text="{Binding X, Mode=TwoWay}" />
                                             </StackPanel>
 
                                             <StackPanel Orientation="Horizontal" Grid.Column="2" Margin="5"
                                                         HorizontalAlignment="Stretch">
-                                                <Label Content="Y" Width="70" VerticalAlignment="Center" />
+                                                <Label Content="Y (m)" Width="70" VerticalAlignment="Center" />
                                                 <TextBox Width="60" Margin="5,0,0,0" Text="{Binding Y, Mode=TwoWay}" />
                                             </StackPanel>
 
                                             <StackPanel Orientation="Horizontal" Grid.Column="3" Margin="5"
                                                         HorizontalAlignment="Stretch">
-                                                <Label Content="Z" Width="70" VerticalAlignment="Center" />
+                                                <Label Content="Z (m)" Width="70" VerticalAlignment="Center" />
                                                 <TextBox Width="60" Margin="5,0,0,0" Text="{Binding Z, Mode=TwoWay}" />
                                             </StackPanel>
 
                                             <StackPanel Orientation="Horizontal" Grid.Column="4" Margin="5"
                                                         HorizontalAlignment="Stretch">
-                                                <Label Content="Accuracy" Width="70" VerticalAlignment="Center" />
+                                                <Label Content="Accuracy (m)" Width="70" VerticalAlignment="Center" />
                                                 <TextBox Width="80" Margin="5,0,0,0"
                                                          Text="{Binding Accuracy, Mode=TwoWay}" />
                                             </StackPanel>

@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Win32;
+using ResearchUI.Model;
 
 namespace ResearchUI;
 
@@ -47,6 +48,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         DataDirTextBox.Text = "Data";
         VideoDirTextBox.Text = "Data/video";
         ExportDirTextBox.Text = "Data/export";
+        ConfigDirTextBox.Text = "Data/config";
         RegenerateCheckBox.IsChecked = true;
         ProcessIndividuallyCheckBox.IsChecked = false;
         UseMaskCheckBox.IsChecked = false;
@@ -67,9 +69,45 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         BufferPercentTextBox.Text = "0.1";
         ConfidenceThresholdTextBox.Text = "0";
 
+
+        // Set default values for collection parameters
+        SensorCorrectionCheckbox.IsChecked = false;
+        FiducialConstraintCheckbox.IsChecked = true;
+
+        RollingShutterCombobox.SelectedIndex = 0; // "Disabled"
+        SensorTypeComboBox.SelectedIndex = 0; // "Unknown"
+
+        PixelHeightTextBox.Text = "0.0019";
+        PixelWidthTextBox.Text = "0.0019";
+
+
         FiducialConstraints.Pairs.Add(new Pair { Target1 = "target 1", Target2 = "target 2", Distance = 0.185 });
+        FiducialConstraints.Pairs.Add(new Pair { Target1 = "target 1", Target2 = "target 3", Distance = 0.185 });
+        FiducialConstraints.Pairs.Add(new Pair { Target1 = "target 1", Target2 = "target 4", Distance = 0.185 });
+        FiducialConstraints.Pairs.Add(new Pair { Target1 = "target 1", Target2 = "target 5", Distance = 0.185 });
+        FiducialConstraints.Pairs.Add(new Pair { Target1 = "target 2", Target2 = "target 3", Distance = 0.185 });
+        FiducialConstraints.Pairs.Add(new Pair { Target1 = "target 2", Target2 = "target 4", Distance = 0.185 });
+        FiducialConstraints.Pairs.Add(new Pair { Target1 = "target 2", Target2 = "target 5", Distance = 0.185 });
+        FiducialConstraints.Pairs.Add(new Pair { Target1 = "target 3", Target2 = "target 4", Distance = 0.185 });
+        FiducialConstraints.Pairs.Add(new Pair { Target1 = "target 3", Target2 = "target 5", Distance = 0.185 });
+        FiducialConstraints.Pairs.Add(new Pair { Target1 = "target 4", Target2 = "target 5", Distance = 0.185 });
+
+
         FiducialConstraints.Position.Add(new Position
             { Target = "target 1", X = 0.0, Y = 0.0925, Z = 0.1045, Accuracy = 0.01 });
+        
+        FiducialConstraints.Position.Add(new Position
+            { Target = "target 2", X = 0.185, Y = 0.0925, Z = 0.1045, Accuracy = 0.01 });
+        
+        FiducialConstraints.Position.Add(new Position
+            { Target = "target 3", X = 0.0925, Y = 0.0925, Z = 0.209, Accuracy = 0.01 });
+        
+                
+        FiducialConstraints.Position.Add(new Position
+            { Target = "target 4", X = 0.0925, Y = 0.0, Z = 0.1045, Accuracy = 0.01 });
+        
+        FiducialConstraints.Position.Add(new Position
+            { Target = "target 5", X = 0.0925, Y = 0.185, Z = 0.1045, Accuracy = 0.01 });
 
 
         AddPairCommand = new RelayCommand(AddPair);
