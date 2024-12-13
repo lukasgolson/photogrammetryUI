@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Win32;
+using PythonBindings;
 using ResearchUI.Model;
 
 namespace ResearchUI;
@@ -16,7 +17,7 @@ namespace ResearchUI;
 public partial class MainWindow : Window, INotifyPropertyChanged
 {
     private StringBuilder _consoleOutput; // Shared memory for console output
-    private Python _python;
+    private PythonEnvironment _pythonEnvironment;
 
     public FiducialConstraints FiducialConstraints { get; set; } = new();
 
@@ -131,8 +132,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         Console.SetOut(new TextBoxWriter(this));
         Console.SetError(new TextBoxWriter(this));
 
-        _python = new Python();
-
         // run the startup sequence asynchronously
         Task.Run(StartupSequence);
     }
@@ -182,6 +181,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private async void StartupSequence()
     {
+        Console.WriteLine("Starting up...");
+        _pythonEnvironment = await PythonEnvironment.SetupPython("Python", "python-setup.json");
+        Console.WriteLine("Python environment setup complete.");
+        
+        
         // print assembly version and build date
         Console.WriteLine("VidTree UI");
         Console.WriteLine($"Assembly: {System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}");
@@ -190,9 +194,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             $"Build Date: {File.GetCreationTime(System.Reflection.Assembly.GetExecutingAssembly().Location)}");
         Console.WriteLine();
 
-        await _python.RunProcess("--version");
+        await _pythonEnvironment.RunScript("--version");
 
-        await _python.RunProcess("Scripts/setup.py");
+        await _pythonEnvironment.RunScript("Scripts/setup.py");
     }
 
     // Allow only numeric input (integers)
@@ -250,7 +254,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         string arguments = $@"--data_dir {dataDir} --video_dir {videoDir} --export_dir {exportDir}";
 
-        _python.RunProcess(arguments).Wait();
+        _pythonEnvironment.RunScript(arguments).Wait();
     }
 
 

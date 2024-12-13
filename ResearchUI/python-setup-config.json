@@ -1,8 +1,0 @@
-﻿{
-  "PythonDownloadURL": "https://www.python.org/ftp/python/3.11.7/python-3.11.7-embed-amd64.zip",
-  "PipDownloadURL": "https://bootstrap.pypa.io/pip/pip.pyz",
-  "PythonDownloadZip": "python code-3.11.7-embed-amd64.zip",
-  "PythonExtractDir": "Python",
-  "PthFile": "python311._pth",
-  "PythonInteriorZip": "python311.zip"
-}

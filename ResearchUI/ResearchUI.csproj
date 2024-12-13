@@ -9,12 +9,20 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Update="python-setup-config.json">
+      <None Update="python-setup.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
       <None Update="Scripts\setup.py">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Python\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\PythonBindings\PythonBindings.csproj" />
     </ItemGroup>
 
 

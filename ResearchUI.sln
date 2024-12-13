@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResearchUI", "ResearchUI\ResearchUI.csproj", "{FB1A0747-B922-46C3-A1FC-D780125D0478}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetupPython", "SetupPython\SetupPython.csproj", "{2913DC32-E488-4401-9C64-824B74E4E111}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PythonBindings", "PythonBindings\PythonBindings.csproj", "{2913DC32-E488-4401-9C64-824B74E4E111}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
