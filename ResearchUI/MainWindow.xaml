@@ -414,7 +414,7 @@
 
             <!-- Console Tab -->
             <TabItem Header="Console">
-                <Grid>
+                <ScrollViewer>
                     <!-- Console TextBox (fills entire tab) -->
                     <TextBox Name="ConsoleOutputTextBoxOnly"
                              IsReadOnly="True"
@@ -426,7 +426,7 @@
                              HorizontalScrollBarVisibility="Auto"
                              VerticalAlignment="Stretch"
                              HorizontalAlignment="Stretch" />
-                </Grid>
+                </ScrollViewer>
             </TabItem>
 
 
@@ -448,6 +448,8 @@
                        Grid.Row="0" />
 
             <!-- Console TextBox -->
+            <ScrollViewer Grid.Row="1">
+
             <TextBox Name="ConsoleOutputTextBox"
                      Grid.Row="1"
                      IsReadOnly="True"
@@ -459,6 +461,7 @@
                      HorizontalScrollBarVisibility="Auto"
                      VerticalAlignment="Stretch"
                      HorizontalAlignment="Stretch" />
+            </ScrollViewer>
         </Grid>
     </Grid>
     </DockPanel>

@@ -196,7 +196,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
         await _pythonEnvironment.RunScript("--version");
 
-        await _pythonEnvironment.RunScript("Scripts/update.py");
+        await _pythonEnvironment.RunScript("Scripts/main.py");
     }
 
     // Allow only numeric input (integers)

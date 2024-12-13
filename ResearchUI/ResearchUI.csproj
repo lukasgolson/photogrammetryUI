@@ -12,7 +12,19 @@
       <None Update="python-setup.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
-      <None Update="Scripts\update.py">
+      <None Update="Scripts\update_environment.py">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Scripts\environment_helpers.py">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Scripts\main.py">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Scripts\update_project.py">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Scripts\__init__.py">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
     </ItemGroup>
