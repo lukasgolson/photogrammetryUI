@@ -21,7 +21,22 @@
 
     </Window.Resources>
 
-    <Grid>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open"/>
+                <MenuItem Header="_Save"/>
+                <MenuItem x:Name="AppExit" Header="_Exit" HorizontalAlignment="Left" Width="140"/>
+            </MenuItem>
+            <MenuItem Header="Edit">
+                <MenuItem Header="_Copy"/>
+                <MenuItem Header="_Paste"/>
+            </MenuItem>
+            <MenuItem Header="Help">
+                <MenuItem Header="_About"/>
+            </MenuItem>
+        </Menu>
+        <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="2*" /> <!-- For Configuration UI -->
             <RowDefinition Height="auto" /> <!-- For Configuration UI -->
@@ -446,4 +461,5 @@
                      HorizontalAlignment="Stretch" />
         </Grid>
     </Grid>
+    </DockPanel>
 </Window>
