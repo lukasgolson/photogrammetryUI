@@ -9,11 +9,34 @@ def upgrade_pip():
     try:
         print("Upgrading pip...")
         print("Current Working Directory: ", sys.path[0])
-        subprocess.run([sys.executable, "Python/pip.pyz", "install", "--upgrade", "pip"], check=True)
-        print("pip upgraded successfully.")
+
+        # Check if pip is installed
+        pip_check = subprocess.run(
+            [sys.executable, "-m", "pip", "--version"],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )
+
+        if pip_check.returncode != 0:
+            print("pip has not been installed. Using embedded pip.pyz to upgrade pip..")
+            result = subprocess.run(
+                [sys.executable, "Python/pip.pyz", "install", "--upgrade", "pip"],
+                check=True
+            )
+            print(f"pip upgraded successfully using pip.pyz: {result.stdout}")
+            return
+
+        # If pip is functional, use it to upgrade itself
+        result = subprocess.run(
+            [sys.executable, "-m", "pip", "install", "--upgrade", "pip"],
+            check=True
+        )
+        print(f"pip upgraded successfully: {result.stdout}")
     except subprocess.CalledProcessError as e:
         print(f"Failed to upgrade pip: {e}")
         sys.exit(1)  # Exit if pip upgrade fails
+    except FileNotFoundError:
+        print("The required pip.pyz file or executable is missing.")
+        sys.exit(1)
 
 
 def update_all_packages():

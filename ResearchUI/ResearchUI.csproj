@@ -12,7 +12,7 @@
       <None Update="python-setup.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
-      <None Update="Scripts\setup.py">
+      <None Update="Scripts\update.py">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
     </ItemGroup>
