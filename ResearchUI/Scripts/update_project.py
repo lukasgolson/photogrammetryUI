@@ -7,7 +7,9 @@ eh.install_package("pyFLTK")
 
 import pygit2
 import keyring
-from fltk import *
+
+# all of these windows will have to be replaced with native wpf windows eventually. These are just for testing purposes
+from fltk import * 
 
 
 def show_message(title, message):
